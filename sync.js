@@ -54,6 +54,76 @@ function normalizar(raw) {
   };
 }
 
+// Detecta el precio de distribuidor en la lista de precios de un artículo
+const ES_DISTRIBUIDOR = /distribu|mayor/i;
+
+function precioDistribuidor(raw) {
+  if (!Array.isArray(raw.price)) return null;
+  const entrada = raw.price.find((p) => ES_DISTRIBUIDOR.test(p?.name ?? ''));
+  if (!entrada) return null;
+  const valor = Number(entrada.price ?? 0);
+  return valor > 0 ? valor : null;
+}
+
+async function traerContactos(auth) {
+  const contactos = [];
+  for (let page = 0; page < 200; page++) {
+    const url = `${API_BASE}/contacts?start=${page * PAGE_SIZE}&limit=${PAGE_SIZE}`;
+    const res = await fetchAlegra(url, auth);
+    if (!res.ok) {
+      console.warn(`Alegra respondió ${res.status} leyendo contactos; continúo sin más páginas.`);
+      break;
+    }
+    const lote = await res.json();
+    if (!Array.isArray(lote) || lote.length === 0) break;
+    contactos.push(...lote);
+    if (lote.length < PAGE_SIZE) break;
+    await sleep(PAUSA_MS);
+  }
+  return contactos;
+}
+
+function cedulaDe(contacto) {
+  const ident = contacto.identification;
+  if (!ident) return null;
+  if (typeof ident === 'string') return ident.trim();
+  if (typeof ident === 'object' && ident.number) return String(ident.number).trim();
+  return null;
+}
+
+async function publicarEnRepoPrivado(contenido) {
+  const token = process.env.DATOS_TOKEN;
+  const repo = process.env.REPO_DATOS;
+  if (!token || !repo) {
+    console.warn('Sin DATOS_TOKEN / REPO_DATOS: no se publican datos de distribuidores.');
+    return;
+  }
+  const api = `https://api.github.com/repos/${repo}/contents/distribuidores.json`;
+  const headers = {
+    Authorization: `Bearer ${token}`,
+    Accept: 'application/vnd.github+json',
+    'Content-Type': 'application/json',
+  };
+  // Obtener sha actual si el archivo ya existe
+  let sha;
+  const actual = await fetch(api, { headers });
+  if (actual.ok) sha = (await actual.json()).sha;
+
+  const res = await fetch(api, {
+    method: 'PUT',
+    headers,
+    body: JSON.stringify({
+      message: 'Datos de distribuidores actualizados',
+      content: Buffer.from(JSON.stringify(contenido, null, 1)).toString('base64'),
+      ...(sha ? { sha } : {}),
+    }),
+  });
+  if (!res.ok) {
+    throw new Error(`GitHub respondió ${res.status} publicando distribuidores.json`);
+  }
+  console.log(`distribuidores.json publicado en ${repo} (privado).`);
+}
+
 async function main() {
   const email = process.env.ALEGRA_EMAIL;
   const token = process.env.ALEGRA_TOKEN;
@@ -103,6 +173,38 @@ async function main() {
   console.log(
     `Listo: ${todos.length} artículos leídos en ${paginas} páginas. ${enStock.length} con stock guardados en productos.json.`
   );
+
+  // ----- Datos de distribuidores (van al repositorio PRIVADO) -----
+  const idsEnStock = new Set(enStock.map((p) => p.id));
+  const precios = {};
+  for (const raw of todos) {
+    const pd = precioDistribuidor(raw);
+    if (pd && idsEnStock.has(String(raw.id))) {
+      precios[String(raw.id)] = pd;
+    }
+  }
+  console.log(`Artículos en stock con precio de distribuidor: ${Object.keys(precios).length}`);
+
+  console.log('Leyendo contactos para identificar distribuidores...');
+  const contactos = await traerContactos(auth);
+  const distribuidores = contactos
+    .filter((c) => {
+      const lista = c.priceList?.name ?? c.priceList ?? '';
+      return ES_DISTRIBUIDOR.test(String(lista));
+    })
+    .map((c) => ({
+      id: c.id,
+      nombre: c.name ?? '',
+      cedula: cedulaDe(c),
+    }))
+    .filter((c) => c.cedula);
+  console.log(`Contactos leídos: ${contactos.length}. Distribuidores con cédula: ${distribuidores.length}.`);
+
+  await publicarEnRepoPrivado({
+    actualizado: new Date().toISOString(),
+    distribuidores,
+    precios,
+  });
 }
 
 main().catch((e) => {
