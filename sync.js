@@ -66,33 +66,47 @@ function precioDistribuidor(raw) {
 }
 
 async function traerContactos(auth) {
+  // La API de contactos de Alegra corta la paginación con start/limit alrededor
+  // del registro 240. Para cubrir todos los contactos (cientos), recorremos por
+  // tramos de 'start' fijos: si un tramo da 400, lo saltamos y seguimos con el
+  // siguiente, en vez de detenernos. Cubrimos holgadamente hasta 2.000 contactos.
+  const LIMITE = 100;          // lote grande: menos peticiones
+  const MAX_START = 2000;      // tope de seguridad
   const contactos = [];
+  const vistos = new Set();    // evita duplicados por si los tramos se solapan
   let vaciasSeguidas = 0;
-  for (let page = 0; page < 400; page++) {
-    // limit=30 y orden estable; pedimos el tipo cliente explícitamente
-    const url = `${API_BASE}/contacts?start=${page * PAGE_SIZE}&limit=${PAGE_SIZE}&order_field=name&order_direction=ASC`;
+
+  for (let start = 0; start < MAX_START; start += LIMITE) {
+    const url = `${API_BASE}/contacts?start=${start}&limit=${LIMITE}&order_field=name&order_direction=ASC`;
     const res = await fetchAlegra(url, auth);
+
     if (res.status === 400) {
-      // Alegra a veces devuelve 400 en una página puntual; no significa fin.
-      // Saltamos esa página y seguimos un par de veces antes de rendirnos.
-      console.warn(`Alegra respondió 400 en la página de contactos ${page}; la salto y sigo.`);
+      console.warn(`Alegra respondió 400 en contactos desde ${start}; salto este tramo y sigo.`);
       vaciasSeguidas++;
-      if (vaciasSeguidas >= 3) break;
+      if (vaciasSeguidas >= 5) break; // varios tramos seguidos fallando = fin real
       await sleep(PAUSA_MS);
       continue;
     }
     if (!res.ok) {
-      console.warn(`Alegra respondió ${res.status} leyendo contactos; continúo sin más páginas.`);
-      break;
+      console.warn(`Alegra respondió ${res.status} leyendo contactos desde ${start}; salto y sigo.`);
+      await sleep(PAUSA_MS);
+      continue;
     }
+
     const lote = await res.json();
-    if (!Array.isArray(lote)) break;
-    if (lote.length === 0) {
+    if (!Array.isArray(lote) || lote.length === 0) {
       vaciasSeguidas++;
       if (vaciasSeguidas >= 2) break;
-    } else {
-      vaciasSeguidas = 0;
-      contactos.push(...lote);
+      await sleep(PAUSA_MS);
+      continue;
+    }
+
+    vaciasSeguidas = 0;
+    for (const c of lote) {
+      if (!vistos.has(c.id)) {
+        vistos.add(c.id);
+        contactos.push(c);
+      }
     }
     await sleep(PAUSA_MS);
   }
@@ -120,7 +134,6 @@ async function publicarEnRepoPrivado(contenido) {
     Accept: 'application/vnd.github+json',
     'Content-Type': 'application/json',
   };
-  // Obtener sha actual si el archivo ya existe
   let sha;
   const actual = await fetch(api, { headers });
   if (actual.ok) sha = (await actual.json()).sha;
@@ -190,7 +203,6 @@ async function main() {
     `Listo: ${todos.length} artículos leídos en ${paginas} páginas. ${enStock.length} con stock guardados en productos.json.`
   );
 
-  // ----- Datos de distribuidores (van al repositorio PRIVADO) -----
   const idsEnStock = new Set(enStock.map((p) => p.id));
   const precios = {};
   for (const raw of todos) {
