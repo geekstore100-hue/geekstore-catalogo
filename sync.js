@@ -67,17 +67,33 @@ function precioDistribuidor(raw) {
 
 async function traerContactos(auth) {
   const contactos = [];
-  for (let page = 0; page < 200; page++) {
-    const url = `${API_BASE}/contacts?start=${page * PAGE_SIZE}&limit=${PAGE_SIZE}`;
+  let vaciasSeguidas = 0;
+  for (let page = 0; page < 400; page++) {
+    // limit=30 y orden estable; pedimos el tipo cliente explícitamente
+    const url = `${API_BASE}/contacts?start=${page * PAGE_SIZE}&limit=${PAGE_SIZE}&order_field=name&order_direction=ASC`;
     const res = await fetchAlegra(url, auth);
+    if (res.status === 400) {
+      // Alegra a veces devuelve 400 en una página puntual; no significa fin.
+      // Saltamos esa página y seguimos un par de veces antes de rendirnos.
+      console.warn(`Alegra respondió 400 en la página de contactos ${page}; la salto y sigo.`);
+      vaciasSeguidas++;
+      if (vaciasSeguidas >= 3) break;
+      await sleep(PAUSA_MS);
+      continue;
+    }
     if (!res.ok) {
       console.warn(`Alegra respondió ${res.status} leyendo contactos; continúo sin más páginas.`);
       break;
     }
     const lote = await res.json();
-    if (!Array.isArray(lote) || lote.length === 0) break;
-    contactos.push(...lote);
-    if (lote.length < PAGE_SIZE) break;
+    if (!Array.isArray(lote)) break;
+    if (lote.length === 0) {
+      vaciasSeguidas++;
+      if (vaciasSeguidas >= 2) break;
+    } else {
+      vaciasSeguidas = 0;
+      contactos.push(...lote);
+    }
     await sleep(PAUSA_MS);
   }
   return contactos;
