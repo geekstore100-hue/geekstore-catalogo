@@ -3,5 +3,8 @@
     "activo": true,
     "texto": "🚚 Envíos a toda Colombia — Servicio técnico especializado en Bogotá",
     "enlace": ""
+  },
+  "tema": {
+    "colorPrincipal": "#0d7cc1"
   }
 }
