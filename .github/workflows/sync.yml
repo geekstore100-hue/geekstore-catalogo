@@ -2,8 +2,8 @@ name: Sincronizar catalogo Alegra
 
 on:
   schedule:
-    - cron: "*/30 * * * *"
-  workflow_dispatch: {}
+    - cron: "*/30 * * * *"   # cada 30 minutos
+  workflow_dispatch: {}       # permite ejecutarlo manualmente con un boton
 
 permissions:
   contents: write
@@ -29,6 +29,8 @@ jobs:
         env:
           ALEGRA_EMAIL: ${{ secrets.ALEGRA_EMAIL }}
           ALEGRA_TOKEN: ${{ secrets.ALEGRA_TOKEN }}
+          DATOS_TOKEN: ${{ secrets.DATOS_TOKEN }}
+          REPO_DATOS: geekstore100-hue/geekstore-datos
 
       - name: Publicar productos.json si cambio
         run: |
