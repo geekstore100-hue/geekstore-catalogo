@@ -1,0 +1,26 @@
+name: Inspeccionar campo mostrar en tienda
+
+on:
+  workflow_dispatch:
+    inputs:
+      item_visible:
+        description: "ID del articulo que SI se muestra en tienda"
+        required: true
+      item_oculto:
+        description: "ID del articulo que NO se muestra en tienda"
+        required: true
+
+jobs:
+  inspeccionar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node inspeccionar.js
+        env:
+          ALEGRA_EMAIL: ${{ secrets.ALEGRA_EMAIL }}
+          ALEGRA_TOKEN: ${{ secrets.ALEGRA_TOKEN }}
+          ITEM_A: ${{ github.event.inputs.item_visible }}
+          ITEM_B: ${{ github.event.inputs.item_oculto }}
