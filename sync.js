@@ -66,27 +66,40 @@ function precioDistribuidor(raw) {
 }
 
 async function traerContactos(auth) {
-  // Pedimos SOLO los contactos de la lista de precios "Distribuidor" (id 2),
-  // usando el filtro priceList de la API. Así no recorremos los cientos de
-  // clientes finales: Alegra devuelve directamente el subconjunto que importa.
-  // limit=30 es el máximo que admite la API de Alegra.
+  // La API de contactos de Alegra corta en ~240 registros, incluso filtrando
+  // por priceList. Como el orden es alfabético por nombre, recorremos en AMBOS
+  // sentidos (A→Z y Z→A) y unimos sin duplicados: así cubrimos hasta ~480
+  // distribuidores, sorteando el tope de la API.
   const PRICE_LIST_DISTRIBUIDOR = 2;
   const LIMITE = 30;
-  const contactos = [];
 
-  for (let start = 0; start < 2000; start += LIMITE) {
-    const url = `${API_BASE}/contacts?priceList=${PRICE_LIST_DISTRIBUIDOR}&start=${start}&limit=${LIMITE}&order_field=name&order_direction=ASC`;
-    const res = await fetchAlegra(url, auth);
-    if (!res.ok) {
-      console.warn(`Alegra respondió ${res.status} leyendo contactos distribuidor desde ${start}; me detengo.`);
-      break;
+  async function recorrer(direccion) {
+    const acumulado = [];
+    for (let start = 0; start < 1000; start += LIMITE) {
+      const url = `${API_BASE}/contacts?priceList=${PRICE_LIST_DISTRIBUIDOR}&start=${start}&limit=${LIMITE}&order_field=name&order_direction=${direccion}`;
+      const res = await fetchAlegra(url, auth);
+      if (!res.ok) {
+        console.warn(`Alegra respondió ${res.status} en contactos (${direccion}) desde ${start}; corto este sentido.`);
+        break;
+      }
+      const lote = await res.json();
+      if (!Array.isArray(lote) || lote.length === 0) break;
+      acumulado.push(...lote);
+      if (lote.length < LIMITE) break;
+      await sleep(PAUSA_MS);
     }
-    const lote = await res.json();
-    if (!Array.isArray(lote) || lote.length === 0) break;
-    contactos.push(...lote);
-    if (lote.length < LIMITE) break;
-    await sleep(PAUSA_MS);
+    return acumulado;
   }
+
+  const asc = await recorrer('ASC');
+  const desc = await recorrer('DESC');
+
+  const porId = new Map();
+  for (const c of [...asc, ...desc]) {
+    if (!porId.has(c.id)) porId.set(c.id, c);
+  }
+  const contactos = [...porId.values()];
+  console.log(`Contactos por sentido: ASC=${asc.length}, DESC=${desc.length}, únicos=${contactos.length}`);
   return contactos;
 }
 
@@ -205,10 +218,6 @@ async function main() {
   const buscada = '53114666';
   const encontrada = distribuidores.find((d) => d.cedula === buscada);
   console.log(`DIAG: ¿está ${buscada}? -> ${encontrada ? 'SÍ' : 'NO'}`);
-  console.log('DIAG primeras 5 cédulas: ' + distribuidores.slice(0, 5).map((d) => JSON.stringify(d.cedula)).join(', '));
-  if (contactos[0]) {
-    console.log('DIAG identification del primer contacto: ' + JSON.stringify(contactos[0].identification));
-  }
   // --- FIN DIAGNÓSTICO ---
 
   await publicarEnRepoPrivado({
