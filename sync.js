@@ -201,6 +201,16 @@ async function main() {
     .filter((c) => c.cedula);
   console.log(`Contactos leídos: ${contactos.length}. Distribuidores con cédula: ${distribuidores.length}.`);
 
+  // --- DIAGNÓSTICO TEMPORAL (quitar luego) ---
+  const buscada = '53114666';
+  const encontrada = distribuidores.find((d) => d.cedula === buscada);
+  console.log(`DIAG: ¿está ${buscada}? -> ${encontrada ? 'SÍ' : 'NO'}`);
+  console.log('DIAG primeras 5 cédulas: ' + distribuidores.slice(0, 5).map((d) => JSON.stringify(d.cedula)).join(', '));
+  if (contactos[0]) {
+    console.log('DIAG identification del primer contacto: ' + JSON.stringify(contactos[0].identification));
+  }
+  // --- FIN DIAGNÓSTICO ---
+
   await publicarEnRepoPrivado({
     actualizado: new Date().toISOString(),
     distribuidores,
