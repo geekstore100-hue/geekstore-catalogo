@@ -66,48 +66,25 @@ function precioDistribuidor(raw) {
 }
 
 async function traerContactos(auth) {
-  // La API de contactos de Alegra corta la paginación con start/limit alrededor
-  // del registro 240. Para cubrir todos los contactos (cientos), recorremos por
-  // tramos de 'start' fijos: si un tramo da 400, lo saltamos y seguimos con el
-  // siguiente, en vez de detenernos. Cubrimos holgadamente hasta 2.000 contactos.
-  const LIMITE = 100;          // lote grande: menos peticiones
-  const MAX_START = 2000;      // tope de seguridad
+  // Pedimos SOLO los contactos de la lista de precios "Distribuidor" (id 2),
+  // usando el filtro priceList de la API. Así no recorremos los cientos de
+  // clientes finales: Alegra devuelve directamente el subconjunto que importa.
+  // limit=30 es el máximo que admite la API de Alegra.
+  const PRICE_LIST_DISTRIBUIDOR = 2;
+  const LIMITE = 30;
   const contactos = [];
-  const vistos = new Set();    // evita duplicados por si los tramos se solapan
-  let vaciasSeguidas = 0;
 
-  for (let start = 0; start < MAX_START; start += LIMITE) {
-    const url = `${API_BASE}/contacts?start=${start}&limit=${LIMITE}&order_field=name&order_direction=ASC`;
+  for (let start = 0; start < 2000; start += LIMITE) {
+    const url = `${API_BASE}/contacts?priceList=${PRICE_LIST_DISTRIBUIDOR}&start=${start}&limit=${LIMITE}&order_field=name&order_direction=ASC`;
     const res = await fetchAlegra(url, auth);
-
-    if (res.status === 400) {
-      console.warn(`Alegra respondió 400 en contactos desde ${start}; salto este tramo y sigo.`);
-      vaciasSeguidas++;
-      if (vaciasSeguidas >= 5) break; // varios tramos seguidos fallando = fin real
-      await sleep(PAUSA_MS);
-      continue;
-    }
     if (!res.ok) {
-      console.warn(`Alegra respondió ${res.status} leyendo contactos desde ${start}; salto y sigo.`);
-      await sleep(PAUSA_MS);
-      continue;
+      console.warn(`Alegra respondió ${res.status} leyendo contactos distribuidor desde ${start}; me detengo.`);
+      break;
     }
-
     const lote = await res.json();
-    if (!Array.isArray(lote) || lote.length === 0) {
-      vaciasSeguidas++;
-      if (vaciasSeguidas >= 2) break;
-      await sleep(PAUSA_MS);
-      continue;
-    }
-
-    vaciasSeguidas = 0;
-    for (const c of lote) {
-      if (!vistos.has(c.id)) {
-        vistos.add(c.id);
-        contactos.push(c);
-      }
-    }
+    if (!Array.isArray(lote) || lote.length === 0) break;
+    contactos.push(...lote);
+    if (lote.length < LIMITE) break;
     await sleep(PAUSA_MS);
   }
   return contactos;
@@ -216,10 +193,6 @@ async function main() {
   console.log('Leyendo contactos para identificar distribuidores...');
   const contactos = await traerContactos(auth);
   const distribuidores = contactos
-    .filter((c) => {
-      const lista = c.priceList?.name ?? c.priceList ?? '';
-      return ES_DISTRIBUIDOR.test(String(lista));
-    })
     .map((c) => ({
       id: c.id,
       nombre: c.name ?? '',
