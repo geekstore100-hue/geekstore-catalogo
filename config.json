@@ -1,9 +1,21 @@
 {
+  "envio": {
+    "costo": 15000,
+    "gratisDesde": 100000
+  },
   "banner": {
     "activo": true,
     "texto": "🚚 Envíos a toda Colombia — Servicio técnico especializado en Bogotá",
     "enlace": ""
   },
+  "bannerSlides": [
+    {
+      "imagen": "https://alegra-shops-images-prod.s3.us-east-1.amazonaws.com/files/93320/01JQD0PC3CMBDEGW86G492Y2G6-campaign_banner.png",
+      "enlace": "",
+      "alt": "",
+      "activo": true
+    }
+  ],
   "tema": {
     "colorPrincipal": "#0d7cc1"
   }
