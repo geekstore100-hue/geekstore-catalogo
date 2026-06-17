@@ -18,5 +18,39 @@
   ],
   "tema": {
     "colorPrincipal": "#0d7cc1"
+  },
+  "hero": {
+    "activo": false,
+    "badge": "Destacado",
+    "titulo": "",
+    "specs": "",
+    "precio": "",
+    "imagen": "",
+    "enlace": ""
+  },
+  "footer": {
+    "sedes": [
+      {
+        "nombre": "",
+        "mapaUrl": ""
+      },
+      {
+        "nombre": "",
+        "mapaUrl": ""
+      }
+    ],
+    "redes": {
+      "whatsapp": "https://wa.me/+573202324321",
+      "instagram": "https://www.instagram.com/geekstorebogota/",
+      "facebook": "https://www.facebook.com/geekstorebogota",
+      "tiktok": "https://www.tiktok.com/@geek.store683"
+    },
+    "horarios": "Lun-Vie 9:00am - 7:00pm\nSab 10:00am-7:00pm",
+    "enlaces": {
+      "distribuidores": "https://geekstore.com.co/distribuidores",
+      "servicioTecnico": "",
+      "seguirPedido": "",
+      "garantias": ""
+    }
   }
 }
