@@ -28,6 +28,18 @@
     "imagen": "",
     "enlace": ""
   },
+  "orden": {
+    "porReciente": true,
+    "cantidadNuevos": 20
+  },
+  "destacados": {
+    "activo": true,
+    "titulo": "Destacados de hoy",
+    "cantidad": 7,
+    "categoriasExcluidas": [
+      "Cables y convertidores"
+    ]
+  },
   "footer": {
     "sedes": [
       {
