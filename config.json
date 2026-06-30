@@ -1,7 +1,12 @@
 {
   "envio": {
     "costo": 0,
-    "gratisDesde": 100000
+    "gratisDesde": 150000,
+    "pesoPorDefecto": 1,
+    "alto": 5,
+    "largo": 15,
+    "ancho": 10,
+    "codigoOrigen": "11001000"
   },
   "banner": {
     "activo": true,
@@ -34,35 +39,3 @@
   },
   "destacados": {
     "activo": true,
-    "titulo": "Destacados de hoy",
-    "cantidad": 7,
-    "categoriasExcluidas": [
-      "Cables y convertidores"
-    ]
-  },
-  "footer": {
-    "sedes": [
-      {
-        "nombre": "Kennedy",
-        "mapaUrl": ""
-      },
-      {
-        "nombre": "Venecia",
-        "mapaUrl": ""
-      }
-    ],
-    "redes": {
-      "whatsapp": "https://wa.me/+573202324321",
-      "instagram": "https://www.instagram.com/geekstorebogota/",
-      "facebook": "https://www.facebook.com/geekstorebogota",
-      "tiktok": "https://www.tiktok.com/@geek.store683"
-    },
-    "horarios": "Lun-Vie 9:00am - 7:00pm\nSab 10:00am-7:00pm",
-    "enlaces": {
-      "distribuidores": "https://geekstore.com.co/distribuidores",
-      "servicioTecnico": "",
-      "seguirPedido": "",
-      "garantias": ""
-    }
-  }
-}
