@@ -1,7 +1,7 @@
 {
   "envio": {
-    "costo": 0,
-    "gratisDesde": 5000
+    "costo": 15000,
+    "gratisDesde": 150000
   },
   "banner": {
     "activo": true,
