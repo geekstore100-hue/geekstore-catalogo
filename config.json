@@ -40,6 +40,9 @@
       "Cables y convertidores"
     ]
   },
+  "busqueda": {
+    "placeholder": "Buscar: Computador gamer, portatil, teclado, etc"
+  },
   "footer": {
     "sedes": [
       {
