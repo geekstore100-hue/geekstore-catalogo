@@ -20,6 +20,12 @@
       "enlace": "https://geekstore.com.co/producto/3073",
       "alt": "",
       "activo": true
+    },
+    {
+      "imagen": "/api/admin/generar-banner?productId=3054",
+      "enlace": "https://geekstore.com.co/producto/3054",
+      "alt": "",
+      "activo": true
     }
   ],
   "tema": {
