@@ -10,7 +10,7 @@
   },
   "bannerSlides": [
     {
-      "imagen": "/api/admin/generar-banner?productId=3078",
+      "imagen": "/api/admin/generar-banner?productId=3078&forzar=1",
       "enlace": "geekstore.com.co/producto/3078",
       "alt": "",
       "activo": true
