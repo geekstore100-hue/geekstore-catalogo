@@ -22,7 +22,7 @@
       "activo": true
     },
     {
-      "imagen": "/api/admin/generar-banner?productId=3078",
+      "imagen": "/api/admin/generar-banner?productId=3078&forzar=1",
       "enlace": "https://geekstore.com.co/producto/3078",
       "alt": "",
       "activo": true
@@ -34,7 +34,7 @@
       "activo": true
     },
     {
-      "imagen": "/api/admin/generar-banner?productId=3018",
+      "imagen": "/api/admin/generar-banner?productId=3018&forzar=1",
       "enlace": "https://geekstore.com.co/producto/3018",
       "alt": "",
       "activo": true
