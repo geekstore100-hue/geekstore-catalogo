@@ -10,7 +10,13 @@
   },
   "bannerSlides": [
     {
-      "imagen": "https://alegra-shops-images-prod.s3.us-east-1.amazonaws.com/files/93320/01JQD0PC3CMBDEGW86G492Y2G6-campaign_banner.png",
+      "imagen": "/api/admin/generar-banner?productId=3078",
+      "enlace": "",
+      "alt": "",
+      "activo": true
+    },
+    {
+      "imagen": "",
       "enlace": "",
       "alt": "",
       "activo": true
