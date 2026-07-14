@@ -11,13 +11,13 @@
   "bannerSlides": [
     {
       "imagen": "/api/admin/generar-banner?productId=3078",
-      "enlace": "",
+      "enlace": "geekstore.com.co/producto/3078",
       "alt": "",
       "activo": true
     },
     {
-      "imagen": "",
-      "enlace": "",
+      "imagen": "/api/admin/generar-banner?productId=3073",
+      "enlace": "https://geekstore.com.co/producto/3073",
       "alt": "",
       "activo": true
     }
