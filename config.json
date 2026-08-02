@@ -26,6 +26,12 @@
       "enlace": "https://geekstore.com.co/producto/3110",
       "alt": "",
       "activo": true
+    },
+    {
+      "imagen": "/api/admin/generar-banner/3102",
+      "enlace": "https://geekstore.com.co/producto/3102",
+      "alt": "",
+      "activo": true
     }
   ],
   "tema": {
