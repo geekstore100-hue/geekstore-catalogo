@@ -28,14 +28,14 @@
       "activo": true
     },
     {
-      "imagen": "/api/admin/generar-banner/3102",
-      "enlace": "https://geekstore.com.co/producto/3102",
+      "imagen": "/api/admin/generar-banner/3078",
+      "enlace": "https://geekstore.com.co/producto/3078",
       "alt": "",
       "activo": true
     },
     {
-      "imagen": "/api/admin/generar-banner/3078",
-      "enlace": "https://geekstore.com.co/producto/3078",
+      "imagen": "/api/admin/generar-banner/3845",
+      "enlace": "https://geekstore.com.co/producto/3128",
       "alt": "",
       "activo": true
     }
