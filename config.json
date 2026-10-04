@@ -102,11 +102,15 @@
     "sedes": [
       {
         "nombre": "Kennedy",
-        "mapaUrl": ""
+        "mapaUrl": "",
+        "direccion": "Calle 40 sur # 77A-66",
+        "enlaceMaps": "https://maps.app.goo.gl/TtNswZhr1QnzwB4TA"
       },
       {
         "nombre": "Venecia",
-        "mapaUrl": ""
+        "mapaUrl": "",
+        "enlaceMaps": "https://maps.app.goo.gl/ZsBzinWb3kKLAQgA6",
+        "direccion": "Dg 46 sur # 53-37 C.C. Venecia Plaza"
       }
     ],
     "redes": {
@@ -120,7 +124,22 @@
       "distribuidores": "https://geekstore.com.co/distribuidores",
       "servicioTecnico": "",
       "seguirPedido": "",
-      "garantias": "/garantias"
+      "garantias": "/garantias",
+      "envios": ""
+    },
+    "pagos": "Tarjeta crédito y débito\nPSE\nNequi\nBancolombia",
+    "google": {
+      "calificacion": "",
+      "resenas": "",
+      "enlace": ""
     }
-  }
+  },
+  "secciones": [
+    {
+      "activo": true,
+      "titulo": "iPhone reacondicionados",
+      "busqueda": "iphone reacondicionado",
+      "cantidad": 8
+    }
+  ]
 }
