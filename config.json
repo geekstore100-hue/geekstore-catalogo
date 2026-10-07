@@ -10,6 +10,13 @@
   },
   "bannerSlides": [
     {
+      "imagen": "/banners/sofa-2026-escritorio.jpg",
+      "enlace": "/?q=figura",
+      "alt": "",
+      "activo": true,
+      "imagenMovil": "/banners/sofa-2026-movil.jpg"
+    },
+    {
       "imagen": "/api/admin/generar-banner/3073",
       "enlace": "https://geekstore.com.co/producto/3073",
       "alt": "",
