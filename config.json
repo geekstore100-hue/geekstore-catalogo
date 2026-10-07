@@ -11,7 +11,14 @@
   "bannerSlides": [
     {
       "imagen": "/banners/sofa-2026-escritorio.jpg",
-      "enlace": "/?q=figura",
+      "enlace": "",
+      "alt": "",
+      "activo": true,
+      "imagenMovil": "/banners/sofa-2026-movil.jpg"
+    },
+    {
+      "imagen": "/banners/sofa-2026-escritorio.jpg",
+      "enlace": "",
       "alt": "",
       "activo": true,
       "imagenMovil": "/banners/sofa-2026-movil.jpg"
