@@ -46,12 +46,6 @@
       "activo": true
     },
     {
-      "imagen": "/api/admin/generar-banner/3850",
-      "enlace": "https://geekstore.com.co/producto/3850",
-      "alt": "",
-      "activo": true
-    },
-    {
       "imagen": "/api/admin/generar-banner/3851",
       "enlace": "https://geekstore.com.co/producto/3851",
       "alt": "",
@@ -141,5 +135,20 @@
       "busqueda": "iphone reacondicionado",
       "cantidad": 8
     }
-  ]
+  ],
+  "mosaico": {
+    "servicio": {
+      "activo": true,
+      "titulo": "",
+      "texto": "",
+      "enlace": ""
+    },
+    "cotiza": {
+      "activo": true,
+      "titulo": "",
+      "texto": "",
+      "boton": "",
+      "enlace": ""
+    }
+  }
 }
