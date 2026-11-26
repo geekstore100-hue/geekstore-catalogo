@@ -22,8 +22,8 @@
       "activo": true
     },
     {
-      "imagen": "/api/admin/generar-banner/3852",
-      "enlace": "https://geekstore.com.co/producto/3852",
+      "imagen": "/api/admin/generar-banner/3956",
+      "enlace": "https://geekstore.com.co/producto/3956",
       "alt": "",
       "activo": true
     },
@@ -52,8 +52,8 @@
       "activo": true
     },
     {
-      "imagen": "/api/admin/generar-banner/3892",
-      "enlace": "https://geekstore.com.co/producto/3892",
+      "imagen": "/api/admin/generar-banner/3958",
+      "enlace": "https://geekstore.com.co/producto/3858",
       "alt": "",
       "activo": true
     },
@@ -66,6 +66,12 @@
     {
       "imagen": "/api/admin/generar-banner/3868",
       "enlace": "https://geekstore.com.co/producto/3868",
+      "alt": "",
+      "activo": true
+    },
+    {
+      "imagen": "/api/admin/generar-banner/1757",
+      "enlace": "https://geekstore.com.co/producto/1757",
       "alt": "",
       "activo": true
     }
